@@ -8,6 +8,7 @@ use App\Helper\JiraHelper;
 use App\Model\Github\PullRequest;
 use App\Model\Github\PullRequestReview;
 use App\Repository\GitHub\Constant\PullRequestSearchFilters;
+use App\Repository\GitHub\Constant\PullRequestSearchFilterState;
 use App\Repository\GitHub\PullRequestLabelRepository;
 use App\Repository\GitHub\PullRequestRepository;
 use App\Repository\GitHub\PullRequestReviewRepository;
@@ -82,10 +83,26 @@ class GitHubHandler
     public function getOpenPullRequestFromHeadBranch(string $headBranchName): ?PullRequest
     {
         $pullRequests = $this->pullRequestRepository->search(
-            [PullRequestSearchFilters::HEAD_REF => $headBranchName]
+            [PullRequestSearchFilters::HEAD => $headBranchName]
         );
 
-        return (true === empty($pullRequests)) ? null : array_pop($pullRequests);
+        return array_pop($pullRequests);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function getPullRequestFromHeadBranch(string $headBranchName): ?PullRequest
+    {
+        $pullRequests = $this->pullRequestRepository->search(
+            [
+                PullRequestSearchFilters::HEAD     => $headBranchName,
+                PullRequestSearchFilters::STATE    => PullRequestSearchFilterState::ALL,
+                PullRequestSearchFilters::NO_CACHE => true,
+            ]
+        );
+
+        return array_pop($pullRequests);
     }
 
     public function isPullRequestApproved(PullRequest $pullRequest): bool
@@ -262,23 +279,20 @@ class GitHubHandler
         }
 
         if (true === \array_key_exists('ref', $webhookData)) {
-            $pullRequests = $this->pullRequestRepository->search(
-                [
-                    PullRequestSearchFilters::HEAD_REF => $webhookData['ref'],
-                ]
+            $pullRequests = array_pop(
+                $this->pullRequestRepository->search(
+                    [PullRequestSearchFilters::HEAD => $webhookData['ref']]
+                )
             );
-
-            if (false === empty($pullRequests)) {
-                $pullRequest = array_pop($pullRequests);
-            }
         }
 
         if (null === $pullRequest) {
             $this->logger->warning(
                 sprintf(
-                    "Could not find pull request from webhook data : %s", json_encode($webhookData)
+                    'Could not find pull request from webhook data : %s', json_encode($webhookData)
                 )
             );
+
             throw new PullRequestNotFoundException();
         }
 

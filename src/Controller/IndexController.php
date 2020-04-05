@@ -7,6 +7,7 @@ use App\Exception\UnexpectedContentType;
 use App\Handler\GitHubHandler;
 use App\Handler\JirHubTaskHandler;
 use App\Handler\SynchronizationHandler;
+use App\Repository\GitHub\Constant\PullRequestSearchFilters;
 use App\Repository\GitHub\PullRequestRepository;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,10 +64,18 @@ class IndexController extends AbstractController
         $key    = $data['issue']['key'];
 
         if ($status === getenv('JIRA_STATUS_DONE')) {
-            $pullRequest = array_pop($pullRequestRepository->search(['head_ref' => $key]));
+            $pullRequest = array_pop(
+                $pullRequestRepository->search(
+                    [PullRequestSearchFilters::HEAD => $key]
+                )
+            );
 
             if (null === $pullRequest) {
-                $pullRequest = array_pop($pullRequestRepository->search(['title' => $key]));
+                $pullRequest = array_pop(
+                    $pullRequestRepository->search(
+                        [PullRequestSearchFilters::TITLE => $key]
+                    )
+                );
             }
 
             if (null !== $pullRequest) {
