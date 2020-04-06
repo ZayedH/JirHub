@@ -89,22 +89,6 @@ class GitHubHandler
         return array_pop($pullRequests);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function getPullRequestFromHeadBranch(string $headBranchName): ?PullRequest
-    {
-        $pullRequests = $this->pullRequestRepository->search(
-            [
-                PullRequestSearchFilters::HEAD     => $headBranchName,
-                PullRequestSearchFilters::STATE    => PullRequestSearchFilterState::ALL,
-                PullRequestSearchFilters::NO_CACHE => true,
-            ]
-        );
-
-        return array_pop($pullRequests);
-    }
-
     public function isPullRequestApproved(PullRequest $pullRequest): bool
     {
         $approveCount = 0;
