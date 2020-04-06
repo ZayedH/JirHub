@@ -75,7 +75,7 @@ class PullRequestRepository
         if (
             false === \array_key_exists(PullRequestSearchFilters::RESULTS_PER_PAGE, $parameters)
             && false === \array_key_exists(PullRequestSearchFilters::STATE, $parameters)
-            && false === $parameters[PullRequestSearchFilters::NO_CACHE] ?? false
+            && false === ($parameters[PullRequestSearchFilters::NO_CACHE] ?? false)
         ) {
             $cacheDefaultList = true;
         }
