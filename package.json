@@ -6,6 +6,9 @@
         "sass-loader": "^7.0.1",
         "webpack-notifier": "^1.8.0"
     },
+    "engines": {
+        "node": "16.x"
+    },
     "license": "UNLICENSED",
     "private": true,
     "scripts": {
