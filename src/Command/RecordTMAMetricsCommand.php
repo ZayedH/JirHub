@@ -38,7 +38,7 @@ class RecordTMAMetricsCommand extends Command
         $this->setDescription('Record all tasks in TMA\'s Jira Filter');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): void
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $jiraFilter = $this->jiraFilterRepository->find($this->tmaFilterId);
         $dateTime   = new \DateTimeImmutable();
@@ -46,5 +46,7 @@ class RecordTMAMetricsCommand extends Command
         foreach ($jiraFilter->getIssues() as $issue) {
             $this->tmaIssueRepository->save($issue, $dateTime);
         }
+
+        return 0;
     }
 }

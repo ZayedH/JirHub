@@ -72,5 +72,7 @@ class HerokuManageCommand extends Command
 
                 break;
         }
+
+        return 0;
     }
 }
