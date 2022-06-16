@@ -16,3 +16,6 @@ services:
     volumes:
       - ./:/var/www/html
       - ./docker/php/symfony.ini:/usr/local/etc/php/conf.d/symfony.ini:ro
+  
+ 
+

@@ -1,0 +1,17 @@
+{% include 'test/header.html.twig' %}
+<h2>Bienvenue à {{nom}} {{prenom}}</h2>
+
+{% if age >60%}
+<h3> Vous êtes un senior </h3>
+{% else %}
+<h3> Vous êtes un junior </h3>
+{% endif %}
+
+<hr>
+{% for info in app.session.get('info') %}
+<p>{{info}}</p>
+{% endfor%}
+
+{% include 'test/footer.html.twig' %}
+
+{# C'est vachement bien par rapport a l'insertion de code  php dans le html #}
