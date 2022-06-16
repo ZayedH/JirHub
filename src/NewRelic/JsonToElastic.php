@@ -35,6 +35,5 @@ class JsonToElastic
        $this->elasticsearchClient->index($params);
         return $this->elasticsearchClient;
     }
-
 }
 
