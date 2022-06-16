@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  App\NewRelic\JsonNewRelic:
+    arguments:
+        $RelicAppi: '%env(RelicAppi)%'
+        $Relickey: '%env(Relickey)%'
+        $RelicHost: '%env(RelicHost)%'
+     
