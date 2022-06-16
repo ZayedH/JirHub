@@ -33,8 +33,6 @@ class JsonToElastic
         
         $params  = ['index' =>"tiime-chronos-newrelic-production",'body' => $json];
        $this->elasticsearchClient->index($params);
-       //$result=$client->index($params);
-     
         return $this->elasticsearchClient;
 
     }
