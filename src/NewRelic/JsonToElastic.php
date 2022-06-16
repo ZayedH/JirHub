@@ -32,15 +32,8 @@ class JsonToElastic
          $now     = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
         
         $params  = ['index' =>"tiime-chronos-newrelic-production",'body' => $json];
-                                                            // Client/builder host ......
-       //dd($params);
-       dd($this->elasticsearchClient);
        $this->elasticsearchClient->index($params);
-       //$result=$client->index($params);
-     
         return $this->elasticsearchClient;
-
     }
-
 }
 
