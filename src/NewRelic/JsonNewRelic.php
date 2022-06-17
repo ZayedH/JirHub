@@ -43,6 +43,5 @@ class JsonNewRelic
         $json=json_encode($content['application']);
       
         return $json;                     
-                                        
     }
 }
