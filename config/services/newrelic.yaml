@@ -6,7 +6,7 @@ services:
 
   App\NewRelic\JsonNewRelic:
     arguments:
-        $RelicAppi: '%env(RelicAppi)%'
-        $Relickey: '%env(Relickey)%'
-        $RelicHost: '%env(RelicHost)%'
+        $appId: '%env(NEW_RELIC_APP_ID)%'
+        $Relickey: '%env(NEW_RELIC_API_KEY)%'
+        $RelicHost: '%env(NEW_RELIC_HOST)%'
      
