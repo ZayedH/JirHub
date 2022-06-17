@@ -4,9 +4,9 @@ services:
     autoconfigure: true
     public: false
 
-  App\NewRelic\JsonNewRelic:
+  App\NewRelic\NewRelicAppReportingPuller:
     arguments:
         $appId: '%env(NEW_RELIC_APP_ID)%'
-        $Relickey: '%env(NEW_RELIC_API_KEY)%'
-        $RelicHost: '%env(NEW_RELIC_HOST)%'
+        $apikey: '%env(NEW_RELIC_API_KEY)%'
+        $host: '%env(NEW_RELIC_HOST)%'
      

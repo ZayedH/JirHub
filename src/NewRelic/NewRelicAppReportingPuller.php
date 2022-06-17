@@ -2,29 +2,30 @@
 namespace App\NewRelic;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class JsonNewRelic
+
+class NewRelicAppReportingPuller
 {
     private HttpClientInterface $newRelicClient;
     private int $appId;
-    private string $Relickey;   //. config
-    private string $RelicHost; ///
+    private string $apikey;   
+    private string $host; 
 
-    public function __construct(HttpClientInterface $newRelicClient, int $appId , string $Relickey,string $RelicHost )
+    public function __construct(HttpClientInterface $newRelicClient, int $appId , string $apikey,string $host )
     {
         $this->newRelicClient= $newRelicClient;
         $this->appId=$appId;
-        $this->Relickey=$Relickey;
-        $this->RelicHost=$RelicHost;
+        $this->apikey=$apikey;
+        $this->host=$host;
     }
 
-    public function fetchInformation()      
+    public function fetchInformation() :  string
     {
         $response = $this->newRelicClient->request(
             'GET',
-            $this->RelicHost.$this->appId.'.json',    
+            $this->host.$this->appId.'.json',    
             [
                 'headers' => [
-                    'X-Api-Key' => $this->Relickey,
+                    'X-Api-Key' => $this->apikey,
                 ],
             ]                                                  
         );
