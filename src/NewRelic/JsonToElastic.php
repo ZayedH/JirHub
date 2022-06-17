@@ -13,7 +13,6 @@ class JsonToElastic
     public function __construct(Client $client,JsonNewRelic $jsonNewRelic )
     {
         $this->elasticsearchClient=$client;
-
         $this->jsonNewRelic=$jsonNewRelic;
     }
 
