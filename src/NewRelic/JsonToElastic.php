@@ -10,7 +10,6 @@ class JsonToElastic
     private Client $elasticsearchClient;
     private JsonNewRelic $jsonNewRelic;
 
-
     public function __construct(Client $client,JsonNewRelic $jsonNewRelic )
     {
         $this->elasticsearchClient=$client;
