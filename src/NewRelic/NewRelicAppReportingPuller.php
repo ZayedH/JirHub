@@ -1,48 +1,48 @@
 <?php
+
 namespace App\NewRelic;
+
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class NewRelicAppReportingPuller
 {
     private HttpClientInterface $newRelicClient;
     private int $appId;
-    private string $apiKey;   
-    private string $host; 
+    private string $apiKey;
+    private string $host;
 
-    public function __construct(HttpClientInterface $newRelicClient, int $appId , string $apiKey,string $host )
+    public function __construct(HttpClientInterface $newRelicClient, int $appId, string $apiKey, string $host)
     {
-        $this->newRelicClient= $newRelicClient;
-        $this->appId=$appId;
-        $this->apiKey=$apiKey;    
-        $this->host=$host;
+        $this->newRelicClient = $newRelicClient;
+        $this->appId          = $appId;
+        $this->apiKey         = $apiKey;
+        $this->host           = $host;
     }
 
-    public function fetchInformation() :  string
+    public function fetchInformation(): string
     {
         $response = $this->newRelicClient->request(
             'GET',
-            $this->host.$this->appId.'.json',    
+            $this->host . $this->appId . '.json',
             [
                 'headers' => [
                     'X-Api-Key' => $this->apiKey,
                 ],
-            ]                                                  
+            ]
         );
 
-        
-        $content = $response->toArray();   
-       
+        $content = $response->toArray();
+
         unset(
             $content['links'],
             $content['application']['settings'],
             $content['application']['links']
         );
 
-        $now     = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
-        $content['application']['@timestamp']=$now;
-        $json=json_encode($content['application']);
-      
-        return $json;                     
-                                        
+        $now                                  = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
+        $content['application']['@timestamp'] = $now;
+        $json                                 = json_encode($content['application']);
+
+        return $json;
     }
 }

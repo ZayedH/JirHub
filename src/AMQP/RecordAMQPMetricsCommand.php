@@ -40,7 +40,7 @@ class RecordAMQPMetricsCommand extends Command
         foreach ($metrics as $metric) {
             $params['body'][] = [
                 'index' => [
-                    '_index' => $this->index,
+                    '_index'  => $this->index,
                     'op_type' => 'create',
                 ],
             ];
