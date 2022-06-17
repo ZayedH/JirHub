@@ -1,5 +1,6 @@
 <?php
 namespace App\NewRelic;
+
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class JsonNewRelic
