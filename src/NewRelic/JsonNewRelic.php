@@ -29,7 +29,6 @@ class JsonNewRelic
                 ],
             ]                                                  
         );
-
         
         $content = $response->toArray();   
        
