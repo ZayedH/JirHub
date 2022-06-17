@@ -8,7 +8,6 @@ use Elasticsearch\Client;
 class JsonToElastic
 {
     private Client $elasticsearchClient;
-
     private JsonNewRelic $jsonNewRelic;
 
 
