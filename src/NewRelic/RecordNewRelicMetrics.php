@@ -25,7 +25,7 @@ class RecordNewRelicMetrics extends Command
     }
     protected function configure()
     {
-        $this->setDescription('Record all AMQP queues metrics');
+        $this->setDescription('relic');
     }
 
     public function  execute(InputInterface $input, OutputInterface $output): int

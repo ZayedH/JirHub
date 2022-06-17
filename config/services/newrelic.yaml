@@ -7,6 +7,6 @@ services:
   App\NewRelic\NewRelicAppReportingPuller:
     arguments:
         $appId: '%env(NEW_RELIC_APP_ID)%'
-        $apikey: '%env(NEW_RELIC_API_KEY)%'
+        $apiKey: '%env(NEW_RELIC_API_KEY)%'
         $host: '%env(NEW_RELIC_HOST)%'
      

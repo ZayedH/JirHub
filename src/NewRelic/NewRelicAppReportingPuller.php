@@ -6,14 +6,14 @@ class NewRelicAppReportingPuller
 {
     private HttpClientInterface $newRelicClient;
     private int $appId;
-    private string $apikey;   
+    private string $apiKey;   
     private string $host; 
 
-    public function __construct(HttpClientInterface $newRelicClient, int $appId , string $apikey,string $host )
+    public function __construct(HttpClientInterface $newRelicClient, int $appId , string $apiKey,string $host )
     {
         $this->newRelicClient= $newRelicClient;
         $this->appId=$appId;
-        $this->apikey=$apikey;    
+        $this->apiKey=$apiKey;    
         $this->host=$host;
     }
 
@@ -24,7 +24,7 @@ class NewRelicAppReportingPuller
             $this->host.$this->appId.'.json',    
             [
                 'headers' => [
-                    'X-Api-Key' => $this->apikey,
+                    'X-Api-Key' => $this->apiKey,
                 ],
             ]                                                  
         );
