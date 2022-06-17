@@ -7,8 +7,8 @@ class JsonNewRelic
 {
     private HttpClientInterface $newRelicClient;
     private int $appId;
-    private string $Relickey;   //. config
-    private string $RelicHost; ///
+    private string $apiKey;
+    private string $host;
 
     public function __construct(HttpClientInterface $newRelicClient, int $appId , string $Relickey,string $RelicHost )
     {
