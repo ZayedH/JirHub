@@ -2,7 +2,6 @@
 namespace App\NewRelic;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-
 class NewRelicAppReportingPuller
 {
     private HttpClientInterface $newRelicClient;
@@ -14,7 +13,7 @@ class NewRelicAppReportingPuller
     {
         $this->newRelicClient= $newRelicClient;
         $this->appId=$appId;
-        $this->apikey=$apikey;
+        $this->apikey=$apikey;    
         $this->host=$host;
     }
 
