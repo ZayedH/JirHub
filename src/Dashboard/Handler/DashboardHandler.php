@@ -48,6 +48,7 @@ class DashboardHandler
     public function getData()
     {
         $cacheItem = $this->cache->getItem(self::CACHE_KEY);
+        //dd($cacheItem);
 
         if (!$cacheItem->isHit()) {
             $cacheItem->set(
