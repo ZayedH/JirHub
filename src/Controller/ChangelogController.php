@@ -22,10 +22,6 @@ class ChangelogController extends AbstractController
      */
     public function index()
     {
-        //dd($this->handler->getProductionChangelog());
-        //dd($cache->getItem('data'));
-        //dd($this->handler->getCommitsLinks());
-        //dd($this->handler);
         $response = new Response(implode(PHP_EOL, $this->handler->getProductionChangelog()));
         $response->headers->set('Content-Type', 'text/plain');
 
