@@ -112,6 +112,7 @@ class ChangelogHandler
 
                 unset($commits[$key]);
             }
+            unset($commits[$key]['labels']);
         }
 
         if (\count($bugMessages) > 0) {
@@ -127,7 +128,7 @@ class ChangelogHandler
                 $messagesLinks[] = 'Autres';
                 $messagesLinks[] = '------';
             }
-            $messagesLinks = array_merge($messagesLinks, array_column($commits, 'message'));
+            $messagesLinks = array_merge($messagesLinks, $commits); // problem avec link
         }
 
         if (\count($messagesLinks) > 0 && null === $messagesLinks[\count($messagesLinks) - 1]) {
@@ -148,7 +149,7 @@ class ChangelogHandler
     public function getCommitsLinks(): array
     {
         $isString = [];
-        $messagesLinks= $this->getOrderedChangelog('master', 'dev');
+        $messagesLinks = $this->getOrderedChangelog('master', 'dev');
         foreach ($messagesLinks as $value) {
             $isString[] = gettype($value);
         }
