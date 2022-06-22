@@ -22,10 +22,9 @@ class ChangelogHandler
     public function getProductionChangelog(): array
     {
         $messagesLinks = $this->getOrderedChangelog('master', 'dev');
-        $messages      = [];
-
+        $messages = [];
         foreach ($messagesLinks as $value) {
-            if ('array' === \gettype($value)) {
+            if (gettype($value) == 'array') {
                 $messages[] = $value['message'];
             } else {
                 $messages[] = $value;
@@ -37,10 +36,11 @@ class ChangelogHandler
 
     public function getChangelog($prev_head, $head): array
     {
-        $commits       = $this->commitRepository->getChangelog($prev_head, $head);
+        $commits = $this->commitRepository->getChangelog($prev_head, $head);
         $messagesLinks = [];
 
         foreach ($commits['commits'] as $commit) {
+
             $messagesLinks[] = ['message' => explode(PHP_EOL, $commit['commit']['message'])[0], 'html_url' => $commit['html_url']];
         }
 
@@ -50,7 +50,7 @@ class ChangelogHandler
     public function getOrderedChangelog($prev_head, $head): array
     {
         $messagesLinks = $this->getChangelog($prev_head, $head);
-        $messages      = array_filter(array_column($messagesLinks, 'message'), function ($message) {
+        $messages = array_filter(array_column($messagesLinks, 'message'), function ($message) {
             $prefixes = ['MEP', 'Merge branch'];
 
             foreach ($prefixes as $prefix) {
@@ -68,12 +68,13 @@ class ChangelogHandler
         $commits    = [];
 
         foreach ($messagesLinks as $key => $value) {
+
             $commit = ['message' => trim($value['message']), 'labels' => [], 'html_url' => []];
             preg_match('/\(?#(\d+)\)?$/', $value['message'], $matches);
             $commit['html_url'] = $messagesLinks[$key]['html_url'];
-
             if (isset($matches[1])) {
                 $commit['labels'] = $this->_getPullRequestLabels($matches[1]);
+
 
                 foreach ($commit['labels'] as $label) {
                     if ('PL' === mb_substr($label, 0, 2) && !\in_array($label, $plSections)) {
@@ -95,6 +96,7 @@ class ChangelogHandler
             foreach ($commits as $key => $commit) {
                 if (\in_array($plSection, $commit['labels'])) {
                     $messagesLinks[] = ['message' => $commit['message'], 'html_url' => $commit['html_url']];
+
 
                     unset($commits[$key]);
                 }
@@ -119,6 +121,7 @@ class ChangelogHandler
             $messagesLinks[] = null;
         }
 
+
         if (\count($commits) > 0) {
             if (\count($messagesLinks) > 0) {
                 $messagesLinks[] = 'Autres';
@@ -141,15 +144,15 @@ class ChangelogHandler
         return $pullRequest->getLabels();
     }
 
+
     public function getCommitsLinks(): array
     {
         $isString = [];
-        $table    = $this->getOrderedChangelog('master', 'dev');
-
-        foreach ($table as $value) {
-            $isString[] = \gettype($value);
+        $messagesLinks= $this->getOrderedChangelog('master', 'dev');
+        foreach ($messagesLinks as $value) {
+            $isString[] = gettype($value);
         }
 
-        return ['num' => \count($isString), 'type' => $isString, 'messageLinks' => $this->getOrderedChangelog('master', 'dev')];
+        return ['num' => count($isString), 'type' => $isString, 'messageLinks' =>  $messagesLinks];
     }
 }
