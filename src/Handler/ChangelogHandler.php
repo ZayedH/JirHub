@@ -24,7 +24,7 @@ class ChangelogHandler
         $messagesLinks = $this->getOrderedChangelog('master', 'dev');
         $messages = [];
         foreach ($messagesLinks as $value) {
-            if (gettype($value) == 'array') {
+            if (is_array($value)) {
                 $messages[] = $value['message'];
             } else {
                 $messages[] = $value;
@@ -147,12 +147,12 @@ class ChangelogHandler
 
     public function getCommitsLinks(): array
     {
-        $isString = [];
+        $type= [];
         $messagesLinks = $this->getOrderedChangelog('master', 'dev');
         foreach ($messagesLinks as $value) {
-            $isString[] = gettype($value);
+            $type[] = gettype($value);
         }
 
-        return ['num' => count($isString), 'type' => $isString, 'messageLinks' =>  $messagesLinks];
+        return ['num' => count($messagesLinks), 'type' => $type, 'messageLinks' =>  $messagesLinks];
     }
 }
