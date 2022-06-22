@@ -50,19 +50,18 @@ class ChangelogHandler
     public function getOrderedChangelog($prev_head, $head): array
     {
         $messagesLinks = $this->getChangelog($prev_head, $head);
-        $messages = array_filter(array_column($messagesLinks, 'message'), function ($message) {
+        $messagesLinks = array_filter($messagesLinks, function ($messagesLink) {
             $prefixes = ['MEP', 'Merge branch'];
 
             foreach ($prefixes as $prefix) {
-                if (mb_substr($message, 0, mb_strlen($prefix)) === $prefix) {
+                if (mb_substr($messagesLink['message'], 0, mb_strlen($prefix)) === $prefix) {
                     return false;
                 }
             }
 
             return true;
-        });
+        }); 
 
-        $messagesLinks = array_diff_key($messagesLinks, array_diff_key($messagesLinks, $messages));
 
         $plSections = [];
         $commits    = [];
@@ -128,7 +127,7 @@ class ChangelogHandler
                 $messagesLinks[] = 'Autres';
                 $messagesLinks[] = '------';
             }
-            $messagesLinks = array_merge($messagesLinks, $commits); // problem avec link
+            $messagesLinks = array_merge($messagesLinks, $commits);
         }
 
         if (\count($messagesLinks) > 0 && null === $messagesLinks[\count($messagesLinks) - 1]) {
