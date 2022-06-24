@@ -19,9 +19,9 @@ class ChangelogHandler
         $this->pullRequestRepository = $pullRequestRepository;
     }
 
-    public function getProductionChangelog(): array
+    public function getProductionChangelog($prev_head, $head): array
     {
-        $messagesLinks = $this->getOrderedChangelog('master', 'dev');
+        $messagesLinks = $this->getOrderedChangelog($prev_head, $head);
         $messages = [];
         foreach ($messagesLinks as $value) {
             if (is_array($value)) {
@@ -145,10 +145,10 @@ class ChangelogHandler
     }
 
 
-    public function getCommitsLinks(): array
+    public function getCommitsLinks($prev_head, $head): array
     {
         $type= [];
-        $messagesLinks = $this->getOrderedChangelog('master', 'dev');
+        $messagesLinks = $this->getOrderedChangelog($prev_head, $head);
         foreach ($messagesLinks as $value) {
             $type[] = gettype($value);
         }

@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class ChangelogController extends AbstractController
 {
     /** @var ChangelogHandler */
@@ -22,7 +23,9 @@ class ChangelogController extends AbstractController
      */
     public function index()
     {
-        $response = new Response(implode(PHP_EOL, $this->handler->getProductionChangelog()));
+      
+        
+        $response = new Response(implode(PHP_EOL, $this->handler->getProductionChangelog('master', 'dev')));
         $response->headers->set('Content-Type', 'text/plain');
 
         return $response;
@@ -31,8 +34,10 @@ class ChangelogController extends AbstractController
     /**
      * @Route("/commits", name="commits", methods={"GET"})
      */
+
     public function commits()
     {
-        return $this->render('dashboard/commits.html.twig', $this->handler->getCommitsLinks());
+       
+        return $this->render('dashboard/commits.html.twig', $this->handler->getCommitsLinks('master', 'dev'));
     }
 }
