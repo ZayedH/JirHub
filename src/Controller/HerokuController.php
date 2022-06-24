@@ -79,7 +79,7 @@ class HerokuController extends AbstractController
         $lastRelease->set($release);
         $this->cache->save($lastRelease);
 
-        $commits = $this->changelogHandler->getProductionChangelog($prev_head, $head);
+        $commits = $this->changelogHandler->getChangelog($prev_head, $head);
 
         $this->slack->filesUpload([
             'channels'        => $this->slackChangelogChannel,
