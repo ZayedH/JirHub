@@ -19,24 +19,26 @@ class NpmOutdated extends Command
         $this->addArgument('path', InputArgument::REQUIRED, 'a path to your txt file is required');
     }
 
-
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $path    = $input->getArgument('path');
+        $path  = $input->getArgument('path');
         $array = explode("\n", file_get_contents($path));
         $array = array_filter($array);
-        $num = count($array);
-        $tab = $this->generateHeader('web');
-        for ($i = 1; $i < $num; $i++) {
+        $num   = \count($array);
+        $tab   = $this->generateHeader('Chronos (web)');
+
+        for ($i = 1; $i < $num; ++$i) {
             $tab[] = $this->patternLigne(explode(' ', $array[$i]));
         }
         $output->writeln($tab);
+
         return 0;
     }
 
     private function patternLigne(array $ligne): string
     {
         $ligne = array_values(array_filter($ligne));
+
         return $this->pattern($ligne[0], $ligne[1], $ligne[3]);
     }
 }

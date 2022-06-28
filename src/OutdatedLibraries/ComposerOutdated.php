@@ -23,7 +23,8 @@ class ComposerOutdated extends Command
     {
         $path    = $input->getArgument('path');
         $content = json_decode(file_get_contents($path), true);
-        $tab     = [];
+        $tab     = $this->generateHeader('Chronos (API)');
+        $tab[]   = '';
 
         foreach ($content['installed'] as $value) {
             $name          = $value['name'];
@@ -39,15 +40,14 @@ class ComposerOutdated extends Command
 
                 if ('symfony' === $pieces[0]) {
                     if ('http-kernel' === $pieces[1]) {
-                        array_unshift($tab, $this->pattern($pieces[0], $version, $latestVersion));
+                        $tab[2] = $this->pattern($pieces[0], $version, $latestVersion);
                     }
                 } elseif ('semver-safe-update' !== $latestStatus) {
                     $tab[] = $this->pattern($name, $version, $latestVersion);
                 }
             }
         }
-        $header = $this->generateHeader('API');
-        array_unshift($tab, $header[0], $header[1]);
+
         $output->writeln($tab);
 
         return 0;
