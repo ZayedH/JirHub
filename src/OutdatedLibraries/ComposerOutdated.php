@@ -7,10 +7,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class OutdatedLibraries extends Command
+class ComposerOutdated extends Command
 {
+    use PatternTrait;
     /** @var string */
-    protected static $defaultName = 'collect:outdated-libraries';
+    protected static $defaultName = 'collect:composer-outdated-libraries';
 
     protected function configure(): void
     {
@@ -45,15 +46,10 @@ class OutdatedLibraries extends Command
                 }
             }
         }
-
-        array_unshift($tab, '| Chronos (API) | version  | version disponible |', '| --- | --- | --- |');
+        $header = $this->generateHeader('API');
+        array_unshift($tab, $header[0], $header[1]);
         $output->writeln($tab);
 
         return 0;
-    }
-
-    private function pattern(string $name, string $version, string $latestVersion = 'abandonné'): string
-    {
-        return '| ⚠️' . ' ' . " $name  | $version  | $latestVersion |";
     }
 }
