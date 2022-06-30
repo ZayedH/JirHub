@@ -54,9 +54,9 @@ class AndroidOutdated extends Command
         if ('-' !== $tab[1]) {
             return '';
         }
-        $version=explode('[', $tab[3])[1];
-        $latestVersion=explode(']', explode('-', $tab[5])[0])[0];
-        if(!$this->isMajor($version,$latestVersion)){
+        $version = explode('[', $tab[3])[1];
+        $latestVersion = explode(']', explode('-', $tab[5])[0])[0];
+        if (!$this->isMajor($version, $latestVersion)) {
             return '';
         }
         return $this->pattern($tab[2], $version, $latestVersion);

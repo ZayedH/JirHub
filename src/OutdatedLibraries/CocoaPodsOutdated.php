@@ -38,12 +38,12 @@ class CocoaPodsOutdated extends Command
     private function patternLigne(array $ligne): string
     {
         $ligne = array_values(array_filter($ligne));
-        $version= $ligne[2];
-        $latestVersion=$ligne[4];
+        $version = $ligne[2];
+        $latestVersion = $ligne[4];
         if ($ligne[4] == '(unused)') {
             return  $this->pattern($ligne[1], $version);
         }
-        if(!$this->isMajor($version,$latestVersion)){
+        if (!$this->isMajor($version, $latestVersion)) {
             return '';
         }
         return $this->pattern($ligne[1], $version, $latestVersion);

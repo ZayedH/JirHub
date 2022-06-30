@@ -38,9 +38,9 @@ class NpmOutdated extends Command
     private function patternLigne(array $ligne): string
     {
         $ligne = array_values(array_filter($ligne));
-        $version=$ligne[1];
-        $latestVersion=$ligne[3];
-        if(!$this->isMajor($version,$latestVersion)){
+        $version = $ligne[1];
+        $latestVersion = $ligne[3];
+        if (!$this->isMajor($version, $latestVersion)) {
             return '';
         }
         return $this->pattern($ligne[0], $version, $latestVersion);
