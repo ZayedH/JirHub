@@ -13,4 +13,8 @@ trait PatternTrait
     {
         return ["| $name | version  | version disponible |", '| --- | --- | --- |'];
     }
+    private function isMajor(string $version,string $latestVersion):bool
+    {
+        return (explode('.',$latestVersion)[0]-explode('.',$version)[0])>0;
+    }
 }

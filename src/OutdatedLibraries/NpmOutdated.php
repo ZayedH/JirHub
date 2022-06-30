@@ -30,7 +30,7 @@ class NpmOutdated extends Command
         for ($i = 1; $i < $num; ++$i) {
             $tab[] = $this->patternLigne(explode(' ', $array[$i]));
         }
-        $output->writeln($tab);
+        $output->writeln(array_filter($tab));
 
         return 0;
     }
@@ -38,7 +38,11 @@ class NpmOutdated extends Command
     private function patternLigne(array $ligne): string
     {
         $ligne = array_values(array_filter($ligne));
-
-        return $this->pattern($ligne[0], $ligne[1], $ligne[3]);
+        $version=$ligne[1];
+        $latestVersion=$ligne[3];
+        if(!$this->isMajor($version,$latestVersion)){
+            return '';
+        }
+        return $this->pattern($ligne[0], $version, $latestVersion);
     }
 }

@@ -30,7 +30,7 @@ class CocoaPodsOutdated extends Command
         for ($i = 3; $i < $num; ++$i) {
             $tab[] = $this->patternLigne(explode(' ', $array[$i]));
         }
-        $output->writeln($tab);
+        $output->writeln(array_filter($tab));
 
 
         return 0;
@@ -38,10 +38,14 @@ class CocoaPodsOutdated extends Command
     private function patternLigne(array $ligne): string
     {
         $ligne = array_values(array_filter($ligne));
-
-        if($ligne[4]=='(unused)'){
-            return  $this->pattern($ligne[1], $ligne[2]);
+        $version= $ligne[2];
+        $latestVersion=$ligne[4];
+        if ($ligne[4] == '(unused)') {
+            return  $this->pattern($ligne[1], $version);
         }
-        return $this->pattern($ligne[1], $ligne[2], $ligne[4]);
+        if(!$this->isMajor($version,$latestVersion)){
+            return '';
+        }
+        return $this->pattern($ligne[1], $version, $latestVersion);
     }
 }
