@@ -1,0 +1,7 @@
+Package                        Current  Wanted  Latest  Location                                    Depended by
+@fortawesome/fontawesome-free   5.11.2  5.15.4   6.1.1  node_modules/@fortawesome/fontawesome-free  JirHub
+@symfony/webpack-encore         0.28.2  0.28.3   2.1.0  node_modules/@symfony/webpack-encore        JirHub
+bulma                            0.8.0   0.8.2   0.9.4  node_modules/bulma                          JirHub
+node-sass                       4.13.0  4.14.1   7.0.1  node_modules/node-sass                      JirHub
+sass-loader                      7.3.1   7.3.1  13.0.2  node_modules/sass-loader                    JirHub
+webpack-notifier                 1.8.0  1.15.0  1.15.0  node_modules/webpack-notifier               JirHub
