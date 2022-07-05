@@ -2,6 +2,7 @@
 
 namespace App\OutdatedLibraries;
 
+use App\OutdatedFileToTable\OutdatedFileToTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,7 +12,15 @@ class CocoaPodsOutdated extends Command
 {
     use PatternTrait;
     /** @var string */
-    protected static $defaultName = 'collect:cocopods-outdated-libraries';
+    protected static $defaultName = 'collect:cocoapods-outdated-libraries';
+    private OutdatedFileToTable $OutdatedFileToTable;
+
+    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
+    {
+        parent::__construct();
+
+        $this->OutdatedFileToTable = $OutdatedFileToTable;
+    }
 
     protected function configure()
     {
@@ -21,31 +30,15 @@ class CocoaPodsOutdated extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $path  = $input->getArgument('path');
+        $path = $input->getArgument('path');
 
-        $array = explode("\n", file_get_contents($path));
-        $array = array_filter($array);
-        $num   = \count($array);
-        $tab   = $this->generateHeader('Chronos (ios)');
-        for ($i = 3; $i < $num; ++$i) {
-            $tab[] = $this->patternLigne(explode(' ', $array[$i]));
+        $tab = $this->OutdatedFileToTable->cocoaPodsOutdatedTable($path);
+
+        foreach ($tab as $key => $value) {
+            $tab[$key] = $this->patternLigne($value);
         }
-        $output->writeln(array_filter($tab));
-
+        $output->writeln(array_merge($this->generateHeader('chronos (ios)'), $tab));
 
         return 0;
-    }
-    private function patternLigne(array $ligne): string
-    {
-        $ligne = array_values(array_filter($ligne));
-        $version = $ligne[2];
-        $latestVersion = $ligne[4];
-        if ($ligne[4] == '(unused)') {
-            return  $this->pattern($ligne[1], $version);
-        }
-        if (!$this->isMajor($version, $latestVersion)) {
-            return '';
-        }
-        return $this->pattern($ligne[1], $version, $latestVersion);
     }
 }

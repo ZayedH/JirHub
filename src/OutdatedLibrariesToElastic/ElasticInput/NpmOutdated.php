@@ -2,37 +2,28 @@
 
 namespace App\OutdatedLibrariesToElastic\ElasticInput;
 
+use App\OutdatedFileToTable\OutdatedFileToTable;
+
 class NpmOutdated
 {
     use PatternTrait;
-    public function getNpmJson(string $path): string
+    private OutdatedFileToTable $OutdatedFileToTable;
+
+    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
     {
-
-        $array = explode("\n", file_get_contents($path));
-        $array = array_filter($array);
-        $num   = \count($array);
-        $tab   = [];
-
-        for ($i = 1; $i < $num; ++$i) {
-            $tab[] = $this->patternLigne(explode(' ', $array[$i]));
-        }
-
-
-        $now     = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
-        $tab[] = ['@timestamp' => $now];
-      
-        return json_encode(array_values(array_filter($tab)));
+        $this->OutdatedFileToTable = $OutdatedFileToTable;
     }
 
-    private function patternLigne(array $ligne): array
+    public function getNpmJson(string $path, string $name): string
     {
-        $ligne = array_values(array_filter($ligne));
-        $version = $ligne[1];
-        $latestVersion = $ligne[3];
-        if (!$this->isMajor($version, $latestVersion)) {
-            return [];
+        $tab = $this->OutdatedFileToTable->npmOutdatedTable($path);
+
+        foreach ($tab as $key => $value) {
+            $tab[$key] = $this->patternArray($name, $value);
         }
-       
-        return $this->pattern('Chronos (web)',$ligne[0],$version,$latestVersion);
+        $now   = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
+        $tab[] = ['@timestamp' => $now];
+
+        return json_encode(array_values($tab));
     }
 }

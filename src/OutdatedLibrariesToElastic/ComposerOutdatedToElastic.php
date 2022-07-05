@@ -29,15 +29,32 @@ class ComposerOutdatedToElastic extends Command
     {
         $this->setDescription('sending composer outdated libraries to elasticsearsh');
         $this->addArgument('path', InputArgument::REQUIRED, 'a path to your json file is required');
+        $this->addArgument('name', InputArgument::REQUIRED, 'the name of your project is required');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $json   = $this->ComposerOutdated->getComposerJson($input->getArgument('path'));
-        $params = ['index' => 'tiime-chronos(API)-outdated-libraries', 'body' => $json];
+        $name = $input->getArgument('name');
 
-        $this->elasticsearchClient->index($params);
+        if ($this->verifyNameChronos($name)) {
+            $json   = $this->ComposerOutdated->getComposerJson($input->getArgument('path'), $name);
+            $params = ['index' => 'tiime-chronos-outdated-libraries', 'body' => $json];
+            $this->elasticsearchClient->index($params);
 
-        return 0;
+            return 0;
+        } else {
+            throw new \LogicException('Make sure the name of your project is in "Chronos".');
+
+            return 1;
+        }
+    }
+
+    private function verifyNameChronos(string $name): bool
+    {
+        if ('Chronos' === $name) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -4,13 +4,8 @@ namespace App\OutdatedLibrariesToElastic\ElasticInput;
 
 trait PatternTrait
 {
-    private function isMajor(string $version, string $latestVersion): bool
+    private function patternArray(string $project, array $value): array
     {
-        return (explode('.', $latestVersion)[0] - explode('.', $version)[0]) > 0;
+        return ['project' => $project, 'library' => $value[0], 'version' => $value[1], 'latestVersion' => $value[2]];
     }
-    private function pattern(string $project,string $name, string $version, string $latestVersion = 'abandonné'): array
-    {
-        return ['project' => "$project", "library" => "$name", 'version' => "$version", 'latestVersion' => "$latestVersion"];
-    }
-
 }

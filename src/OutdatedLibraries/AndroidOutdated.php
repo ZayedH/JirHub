@@ -2,6 +2,7 @@
 
 namespace App\OutdatedLibraries;
 
+use App\OutdatedFileToTable\OutdatedFileToTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,6 +13,14 @@ class AndroidOutdated extends Command
     use PatternTrait;
     /** @var string */
     protected static $defaultName = 'collect:android-outdated-libraries';
+    private OutdatedFileToTable $OutdatedFileToTable;
+
+    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
+    {
+        parent::__construct();
+
+        $this->OutdatedFileToTable = $OutdatedFileToTable;
+    }
 
     protected function configure()
     {
@@ -22,43 +31,13 @@ class AndroidOutdated extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $path = $input->getArgument('path');
+        $tab  = $this->OutdatedFileToTable->androidOutdatedTable($path);
 
-        $array = explode("\n", file_get_contents($path));
-        $array = array_filter($array);
-        $num   = \count($array);
-        $tab   = $this->generateHeader('Chronos (android)');
-        $k     = 0;
-
-        for ($i = 0; $i < $num; ++$i) {
-            if ('Gradle release-candidate updates:' === $array[$i]) {
-                break;
-            }
-
-            if (1 === $k) {
-                $tab[] = $this->patternLigne($array[$i]);
-            }
-
-            if ('The following dependencies have later milestone versions:' === $array[$i]) {
-                $k = 1;
-            }
+        foreach ($tab as $key => $value) {
+            $tab[$key] = $this->patternLigne($value);
         }
-        $output->writeln(array_filter($tab));
+        $output->writeln(array_merge($this->generateHeader('chronos (android)'), $tab));
 
         return 0;
-    }
-
-    private function patternLigne(string $ligne): string
-    {
-        $tab = explode(' ', $ligne);
-
-        if ('-' !== $tab[1]) {
-            return '';
-        }
-        $version = explode('[', $tab[3])[1];
-        $latestVersion = explode(']', explode('-', $tab[5])[0])[0];
-        if (!$this->isMajor($version, $latestVersion)) {
-            return '';
-        }
-        return $this->pattern($tab[2], $version, $latestVersion);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\OutdatedLibraries;
 
+use App\OutdatedFileToTable\OutdatedFileToTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,6 +13,14 @@ class NpmOutdated extends Command
     use PatternTrait;
     /** @var string */
     protected static $defaultName = 'collect:npm-outdated-libraries';
+    private OutdatedFileToTable $OutdatedFileToTable;
+
+    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
+    {
+        parent::__construct();
+
+        $this->OutdatedFileToTable = $OutdatedFileToTable;
+    }
 
     protected function configure()
     {
@@ -21,28 +30,15 @@ class NpmOutdated extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $path  = $input->getArgument('path');
-        $array = explode("\n", file_get_contents($path));
-        $array = array_filter($array);
-        $num   = \count($array);
-        $tab   = $this->generateHeader('Chronos (web)');
+        $path = $input->getArgument('path');
+        $tab  = $this->OutdatedFileToTable->npmOutdatedTable($path);
 
-        for ($i = 1; $i < $num; ++$i) {
-            $tab[] = $this->patternLigne(explode(' ', $array[$i]));
+        foreach ($tab as $key => $value) {
+            $tab[$key] = $this->patternTest($value);
         }
-        $output->writeln(array_filter($tab));
+        $output->writeln(array_merge($this->generateHeader('chronos (web)'), $tab));
+        $output->writeln($tab);
 
         return 0;
-    }
-
-    private function patternLigne(array $ligne): string
-    {
-        $ligne = array_values(array_filter($ligne));
-        $version = $ligne[1];
-        $latestVersion = $ligne[3];
-        if (!$this->isMajor($version, $latestVersion)) {
-            return '';
-        }
-        return $this->pattern($ligne[0], $version, $latestVersion);
     }
 }

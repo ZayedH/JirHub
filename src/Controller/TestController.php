@@ -17,9 +17,9 @@ class TestController extends AbstractController
      */
     public function index(ComposerOutdated $ComposerOutdated, NpmOutdated $NpmOutdated, CocoaPodsOutdated $CocoaPodsOutdated, AndroidOutdated $AndroidOutdated): Response
     {
-      //   dd($ComposerOutdated->getComposerJson('../src/FichiersTest/exemple.json'));
-         //  dd($NpmOutdated->getNpmJson('../src/FichiersTest/npm.txt'));
-      //   dd($CocoaPodsOutdated->getCocoaPodsJson('../src/FichiersTest/ios.txt'));
+        // dd($ComposerOutdated->getComposerJson('../src/FichiersTest/exemple.json'));
+        // dd($NpmOutdated->getNpmJson('../src/FichiersTest/npm.txt'));
+        // dd($CocoaPodsOutdated->getCocoaPodsJson('../src/FichiersTest/ios.txt'));
         dd($AndroidOutdated->getAndroidJson('../src/FichiersTest/android.txt'));
 
         return new response('json');

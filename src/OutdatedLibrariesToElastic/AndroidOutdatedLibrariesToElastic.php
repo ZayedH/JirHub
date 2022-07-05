@@ -29,15 +29,33 @@ class AndroidOutdatedLibrariesToElastic extends Command
     {
         $this->setDescription('sending android outdated libraries to elasticsearsh');
         $this->addArgument('path', InputArgument::REQUIRED, 'a path to your txt file is required');
+        $this->addArgument('name', InputArgument::REQUIRED, 'the name of your project is required');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $json   = $this->AndroidOutdated->getAndroidJson($input->getArgument('path'));
-        $params = ['index' => 'tiime-chronos(android)-outdated-libraries', 'body' => $json];
+        $name = $input->getArgument('name');
 
-        $this->elasticsearchClient->index($params);
+        if ($this->verifyNameAndroid($name)) {
+            $json   = $this->AndroidOutdated->getAndroidJson($input->getArgument('path'));
+            $params = ['index' => 'tiime-chronos-outdated-libraries', 'body' => $json];
 
-        return 0;
+            $this->elasticsearchClient->index($params);
+
+            return 0;
+        } else {
+            throw new \LogicException('Make sure the name of your project is in "Invoice Android,Accounts Android".');
+
+            return 1;
+        }
+    }
+
+    private function verifyNameAndroid(string $name): bool
+    {
+        if ('Invoice Android' === $name || 'Accounts Android' === $name) {
+            return true;
+        }
+
+        return false;
     }
 }

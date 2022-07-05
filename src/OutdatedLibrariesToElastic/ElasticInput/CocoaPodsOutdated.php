@@ -2,42 +2,28 @@
 
 namespace App\OutdatedLibrariesToElastic\ElasticInput;
 
+use App\OutdatedFileToTable\OutdatedFileToTable;
+
 class CocoaPodsOutdated
 {
     use PatternTrait;
+    private OutdatedFileToTable $OutdatedFileToTable;
 
-    public function getCocoaPodsJson(string $path): string
+    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
     {
-        $array = explode("\n", file_get_contents($path));
-        $array = array_filter($array);
-        $num   = \count($array);
-        $tab   = [];
+        $this->OutdatedFileToTable = $OutdatedFileToTable;
+    }
 
-        for ($i = 3; $i < $num; ++$i) {
-            $tab[] = $this->patternLigne(explode(' ', $array[$i]));
+    public function getCocoaPodsJson(string $path, string $name): string
+    {
+        $tab = $this->OutdatedFileToTable->cocoaPodsOutdatedTable($path);
+
+        foreach ($tab as $key => $value) {
+            $tab[$key] = $this->patternArray($name, $value);
         }
         $now   = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
         $tab[] = ['@timestamp' => $now];
-       
-        return json_encode(array_values(array_filter($tab)));
-    }
 
-    private function patternLigne(array $ligne): array
-    {
-        $ligne         = array_values(array_filter($ligne));
-        $version       = $ligne[2];
-        $latestVersion = $ligne[4];
-
-        if ('(unused)' === $ligne[4]) {
-          
-            return $this->pattern('Chronos (ios)',$ligne[1],$version);
-        }
-
-        if (!$this->isMajor($version, $latestVersion)) {
-            return [];
-        }
-
-       
-        return $this->pattern('Chronos (ios)',$ligne[1],$version,$latestVersion);
+        return json_encode(array_values($tab));
     }
 }

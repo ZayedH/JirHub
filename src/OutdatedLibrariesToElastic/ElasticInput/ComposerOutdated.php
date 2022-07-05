@@ -2,47 +2,28 @@
 
 namespace App\OutdatedLibrariesToElastic\ElasticInput;
 
+use App\OutdatedFileToTable\OutdatedFileToTable;
+
 class ComposerOutdated
 {
     use PatternTrait;
+    private OutdatedFileToTable $OutdatedFileToTable;
 
-    public function getComposerJson(string $path): string
+    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
     {
-        $content = json_decode(file_get_contents($path), true);
-        $tab   = [];
-        $tab[] = '';
+        $this->OutdatedFileToTable = $OutdatedFileToTable;
+    }
 
-        foreach ($content['installed'] as $value) {
-            $name          = $value['name'];
-            $version       = $this->filterVersion($value['version']);
-            $latestVersion = $this->filterVersion($value['latest']);
-            $latestStatus  = $value['latest-status'];
-            $isAbandoned   = $value['abandoned'];
+    public function getComposerJson(string $path, string $name): string
+    {
+        $tab = $this->OutdatedFileToTable->composerOutdatedTable($path);
 
-            if ($isAbandoned || \is_string($isAbandoned)) {
-                
-                $tab[] =$this->pattern('Chronos (API)',$name,$version);
-            } else {
-                $pieces = explode('/', $name);
-
-                if ('symfony' === $pieces[0]) {
-                    if ('http-kernel' === $pieces[1]) {
-                        
-                        $tab[0] =$this->pattern('Chronos (API)',$pieces[0],$version,$latestVersion);
-                    }
-                } elseif ('semver-safe-update' !== $latestStatus) {
-
-                    $tab[] =$this->pattern('Chronos (API)',$name,$version,$latestVersion);
-                }
-            }
+        foreach ($tab as $key => $value) {
+            $tab[$key] = $this->patternArray($name, $value);
         }
         $now   = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
         $tab[] = ['@timestamp' => $now];
-        return json_encode($tab);
-    }
 
-    private function filterVersion(string $version): string
-    {
-        return array_values(array_filter(explode('v', $version)))[0];
+        return json_encode($tab);
     }
 }
