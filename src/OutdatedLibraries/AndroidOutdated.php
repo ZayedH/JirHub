@@ -13,14 +13,6 @@ class AndroidOutdated extends Command
     use PatternTrait;
     /** @var string */
     protected static $defaultName = 'collect:android-outdated-libraries';
-    private OutdatedFileToTable $OutdatedFileToTable;
-
-    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
-    {
-        parent::__construct();
-
-        $this->OutdatedFileToTable = $OutdatedFileToTable;
-    }
 
     protected function configure()
     {
@@ -31,7 +23,7 @@ class AndroidOutdated extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $path = $input->getArgument('path');
-        $tab  = $this->OutdatedFileToTable->androidOutdatedTable($path);
+        $tab  = OutdatedFileToTable::androidOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
             $tab[$key] = $this->patternLigne($value);

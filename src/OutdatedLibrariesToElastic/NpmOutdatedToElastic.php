@@ -44,7 +44,7 @@ class NpmOutdatedToElastic extends Command
 
             return 0;
         } else {
-            throw new \LogicException('Make sure the name of your project is in "Expert,Apps web".');
+            throw new \LogicException('Make sure the name of your project is in "Expert, Apps web".');
 
             return 1;
         }

@@ -17,10 +17,10 @@ class TestController extends AbstractController
      */
     public function index(ComposerOutdated $ComposerOutdated, NpmOutdated $NpmOutdated, CocoaPodsOutdated $CocoaPodsOutdated, AndroidOutdated $AndroidOutdated): Response
     {
-        // dd($ComposerOutdated->getComposerJson('../src/FichiersTest/exemple.json'));
-        // dd($NpmOutdated->getNpmJson('../src/FichiersTest/npm.txt'));
-        // dd($CocoaPodsOutdated->getCocoaPodsJson('../src/FichiersTest/ios.txt'));
-        dd($AndroidOutdated->getAndroidJson('../src/FichiersTest/android.txt'));
+        //  dd($ComposerOutdated->getComposerJson('../src/FichiersTest/exemple.json','chronos'));
+        // dd($NpmOutdated->getNpmJson('../src/FichiersTest/npm.txt','npm'));
+        // dd($CocoaPodsOutdated->getCocoaPodsJson('../src/FichiersTest/ios.txt','ios'));
+        dd($AndroidOutdated->getAndroidJson('../src/FichiersTest/android.txt', 'android'));
 
         return new response('json');
     }

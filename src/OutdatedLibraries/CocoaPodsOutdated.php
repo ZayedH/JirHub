@@ -13,14 +13,6 @@ class CocoaPodsOutdated extends Command
     use PatternTrait;
     /** @var string */
     protected static $defaultName = 'collect:cocoapods-outdated-libraries';
-    private OutdatedFileToTable $OutdatedFileToTable;
-
-    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
-    {
-        parent::__construct();
-
-        $this->OutdatedFileToTable = $OutdatedFileToTable;
-    }
 
     protected function configure()
     {
@@ -32,7 +24,7 @@ class CocoaPodsOutdated extends Command
     {
         $path = $input->getArgument('path');
 
-        $tab = $this->OutdatedFileToTable->cocoaPodsOutdatedTable($path);
+        $tab = OutdatedFileToTable::cocoaPodsOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
             $tab[$key] = $this->patternLigne($value);

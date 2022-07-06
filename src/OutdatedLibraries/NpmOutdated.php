@@ -13,14 +13,6 @@ class NpmOutdated extends Command
     use PatternTrait;
     /** @var string */
     protected static $defaultName = 'collect:npm-outdated-libraries';
-    private OutdatedFileToTable $OutdatedFileToTable;
-
-    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
-    {
-        parent::__construct();
-
-        $this->OutdatedFileToTable = $OutdatedFileToTable;
-    }
 
     protected function configure()
     {
@@ -31,10 +23,10 @@ class NpmOutdated extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $path = $input->getArgument('path');
-        $tab  = $this->OutdatedFileToTable->npmOutdatedTable($path);
+        $tab  = OutdatedFileToTable::npmOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
-            $tab[$key] = $this->patternTest($value);
+            $tab[$key] = $this->patternLigne($value);
         }
         $output->writeln(array_merge($this->generateHeader('chronos (web)'), $tab));
         $output->writeln($tab);

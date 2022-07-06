@@ -37,14 +37,14 @@ class AndroidOutdatedLibrariesToElastic extends Command
         $name = $input->getArgument('name');
 
         if ($this->verifyNameAndroid($name)) {
-            $json   = $this->AndroidOutdated->getAndroidJson($input->getArgument('path'));
+            $json   = $this->AndroidOutdated->getAndroidJson($input->getArgument('path'), $name);
             $params = ['index' => 'tiime-chronos-outdated-libraries', 'body' => $json];
 
             $this->elasticsearchClient->index($params);
 
             return 0;
         } else {
-            throw new \LogicException('Make sure the name of your project is in "Invoice Android,Accounts Android".');
+            throw new \LogicException('Make sure the name of your project is in "Invoice Android, Accounts Android".');
 
             return 1;
         }

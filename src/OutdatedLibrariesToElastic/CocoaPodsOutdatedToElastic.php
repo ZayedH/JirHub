@@ -44,7 +44,7 @@ class CocoaPodsOutdatedToElastic extends Command
 
             return 0;
         } else {
-            throw new \LogicException('Make sure the name of your project is in "Accounts IOS,Invoice IOS".');
+            throw new \LogicException('Make sure the name of your project is in "Accounts IOS, Invoice IOS".');
 
             return 1;
         }

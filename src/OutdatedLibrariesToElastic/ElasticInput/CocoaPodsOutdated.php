@@ -7,19 +7,13 @@ use App\OutdatedFileToTable\OutdatedFileToTable;
 class CocoaPodsOutdated
 {
     use PatternTrait;
-    private OutdatedFileToTable $OutdatedFileToTable;
-
-    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
-    {
-        $this->OutdatedFileToTable = $OutdatedFileToTable;
-    }
 
     public function getCocoaPodsJson(string $path, string $name): string
     {
-        $tab = $this->OutdatedFileToTable->cocoaPodsOutdatedTable($path);
+        $tab = OutdatedFileToTable::cocoaPodsOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
-            $tab[$key] = $this->patternArray($name, $value);
+            $tab[$key] = $this->patternArray($name, array_values((array) $value));
         }
         $now   = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
         $tab[] = ['@timestamp' => $now];

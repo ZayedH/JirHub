@@ -8,19 +8,12 @@ class AndroidOutdated
 {
     use PatternTrait;
 
-    private OutdatedFileToTable $OutdatedFileToTable;
-
-    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
+    public function getAndroidJson(string $path, string $name): string
     {
-        $this->OutdatedFileToTable = $OutdatedFileToTable;
-    }
-
-    public function getAndroidJson(string $path): string
-    {
-        $tab = $this->OutdatedFileToTable->androidOutdatedTable($path);
+        $tab = OutdatedFileToTable::androidOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
-            $tab[$key] = $this->patternArray('Chronos (android)', $value);
+            $tab[$key] = $this->patternArray($name, array_values((array) $value));
         }
         $now   = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
         $tab[] = ['@timestamp' => $now];
