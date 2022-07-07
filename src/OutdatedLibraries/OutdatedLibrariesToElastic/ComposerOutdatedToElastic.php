@@ -1,34 +1,34 @@
 <?php
 
-namespace App\OutdatedLibrariesToElastic;
+namespace App\OutdatedLibraries\OutdatedLibrariesToElastic;
 
-use App\OutdatedLibrariesToElastic\ElasticInput\NpmOutdated;
+use App\OutdatedLibraries\OutdatedLibrariesToElastic\ElasticInput\ComposerOutdated;
 use Elasticsearch\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class NpmOutdatedToElastic extends Command
+class ComposerOutdatedToElastic extends Command
 {
     /** @var string */
-    protected static $defaultName = 'npm:outdated-libraries';
+    protected static $defaultName = 'composer:outdated-libraries';
 
     private Client $elasticsearchClient;
-    private NpmOutdated $NpmOutdated;
+    private ComposerOutdated $ComposerOutdated;
 
-    public function __construct(NpmOutdated $NpmOutdated, Client $elasticsearchClient)
+    public function __construct(ComposerOutdated $ComposerOutdated, Client $elasticsearchClient)
     {
         parent::__construct();
 
-        $this->NpmOutdated         = $NpmOutdated;
+        $this->ComposerOutdated    = $ComposerOutdated;
         $this->elasticsearchClient = $elasticsearchClient;
     }
 
     protected function configure()
     {
-        $this->setDescription('sending npm outdated libraries to elasticsearsh');
-        $this->addArgument('path', InputArgument::REQUIRED, 'a path to your txt file is required');
+        $this->setDescription('sending composer outdated libraries to elasticsearsh');
+        $this->addArgument('path', InputArgument::REQUIRED, 'a path to your json file is required');
         $this->addArgument('name', InputArgument::REQUIRED, 'the name of your project is required');
     }
 
@@ -36,23 +36,22 @@ class NpmOutdatedToElastic extends Command
     {
         $name = $input->getArgument('name');
 
-        if ($this->verifyNameNpm($name)) {
-            $json   = $this->NpmOutdated->getNpmJson($input->getArgument('path'), $name);
+        if ($this->verifyNameChronos($name)) {
+            $json   = $this->ComposerOutdated->getComposerJson($input->getArgument('path'), $name);
             $params = ['index' => 'tiime-chronos-outdated-libraries', 'body' => $json];
-
             $this->elasticsearchClient->index($params);
 
             return 0;
         } else {
-            throw new \LogicException('Make sure the name of your project is in "Expert, Apps web".');
+            throw new \LogicException('Make sure the name of your project is in "Chronos".');
 
             return 1;
         }
     }
 
-    private function verifyNameNpm(string $name): bool
+    private function verifyNameChronos(string $name): bool
     {
-        if ('Expert' === $name || 'Apps web' === $name) {
+        if ('Chronos' === $name) {
             return true;
         }
 

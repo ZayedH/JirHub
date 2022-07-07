@@ -1,33 +1,33 @@
 <?php
 
-namespace App\OutdatedLibrariesToElastic;
+namespace App\OutdatedLibraries\OutdatedLibrariesToElastic;
 
-use App\OutdatedLibrariesToElastic\ElasticInput\CocoaPodsOutdated;
+use App\OutdatedLibraries\OutdatedLibrariesToElastic\ElasticInput\AndroidOutdated;
 use Elasticsearch\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CocoaPodsOutdatedToElastic extends Command
+class AndroidOutdatedLibrariesToElastic extends Command
 {
     /** @var string */
-    protected static $defaultName = 'CocoaPods:outdated-libraries';
+    protected static $defaultName = 'android:outdated-libraries';
 
     private Client $elasticsearchClient;
-    private CocoaPodsOutdated $CocoaPodsOutdated;
+    private AndroidOutdated $AndroidOutdated;
 
-    public function __construct(CocoaPodsOutdated $CocoaPodsOutdated, Client $elasticsearchClient)
+    public function __construct(AndroidOutdated $AndroidOutdated, Client $elasticsearchClient)
     {
         parent::__construct();
 
-        $this->CocoaPodsOutdated   = $CocoaPodsOutdated;
+        $this->AndroidOutdated     = $AndroidOutdated;
         $this->elasticsearchClient = $elasticsearchClient;
     }
 
     protected function configure()
     {
-        $this->setDescription('sending CocoaPods outdated libraries to elasticsearsh');
+        $this->setDescription('sending android outdated libraries to elasticsearsh');
         $this->addArgument('path', InputArgument::REQUIRED, 'a path to your txt file is required');
         $this->addArgument('name', InputArgument::REQUIRED, 'the name of your project is required');
     }
@@ -36,23 +36,23 @@ class CocoaPodsOutdatedToElastic extends Command
     {
         $name = $input->getArgument('name');
 
-        if ($this->verifyNameCocoaPods($name)) {
-            $json   = $this->CocoaPodsOutdated->getCocoaPodsJson($input->getArgument('path'), $name);
+        if ($this->verifyNameAndroid($name)) {
+            $json   = $this->AndroidOutdated->getAndroidJson($input->getArgument('path'), $name);
             $params = ['index' => 'tiime-chronos-outdated-libraries', 'body' => $json];
 
             $this->elasticsearchClient->index($params);
 
             return 0;
         } else {
-            throw new \LogicException('Make sure the name of your project is in "Accounts IOS, Invoice IOS".');
+            throw new \LogicException('Make sure the name of your project is in "Invoice Android, Accounts Android".');
 
             return 1;
         }
     }
 
-    private function verifyNameCocoaPods(string $name): bool
+    private function verifyNameAndroid(string $name): bool
     {
-        if ('Accounts IOS' === $name || 'Invoice IOS' === $name) {
+        if ('Invoice Android' === $name || 'Accounts Android' === $name) {
             return true;
         }
 

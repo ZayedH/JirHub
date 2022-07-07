@@ -1,18 +1,25 @@
 <?php
 
-namespace App\OutdatedLibraries;
+namespace App\OutdatedLibraries\OutdatedLibrariesMarkdown;
 
-use App\OutdatedFileToTable\OutdatedFileToTable;
+use App\OutdatedLibraries\OutdatedFileToTable\OutdatedFileToTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class NpmOutdated extends Command
+class CocoaPodsOutdated extends Command
 {
     use PatternTrait;
     /** @var string */
-    protected static $defaultName = 'collect:npm-outdated-libraries';
+    protected static $defaultName = 'collect:cocoapods-outdated-libraries';
+    private OutdatedFileToTable $OutdatedFileToTable;
+
+    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
+    {
+        parent::__construct();
+        $this->OutdatedFileToTable = $OutdatedFileToTable;
+    }
 
     protected function configure()
     {
@@ -23,13 +30,13 @@ class NpmOutdated extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $path = $input->getArgument('path');
-        $tab  = OutdatedFileToTable::npmOutdatedTable($path);
+
+        $tab = $this->OutdatedFileToTable->cocoaPodsOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
             $tab[$key] = $this->patternLigne($value);
         }
-        $output->writeln(array_merge($this->generateHeader('chronos (web)'), $tab));
-        $output->writeln($tab);
+        $output->writeln(array_merge($this->generateHeader('chronos (ios)'), $tab));
 
         return 0;
     }

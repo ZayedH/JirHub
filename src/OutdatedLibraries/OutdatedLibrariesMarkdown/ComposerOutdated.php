@@ -1,8 +1,8 @@
 <?php
 
-namespace App\OutdatedLibraries;
+namespace App\OutdatedLibraries\OutdatedLibrariesMarkdown;
 
-use App\OutdatedFileToTable\OutdatedFileToTable;
+use App\OutdatedLibraries\OutdatedFileToTable\OutdatedFileToTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +14,13 @@ class ComposerOutdated extends Command
 
     /** @var string */
     protected static $defaultName = 'collect:composer-outdated-libraries';
+    private OutdatedFileToTable $OutdatedFileToTable;
 
+    public function __construct(OutdatedFileToTable $OutdatedFileToTable)
+    {
+        parent::__construct();
+        $this->OutdatedFileToTable = $OutdatedFileToTable;
+    }
     protected function configure(): void
     {
         $this->setDescription('collecting outdated libraries');
@@ -24,7 +30,7 @@ class ComposerOutdated extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $path = $input->getArgument('path');
-        $tab  = OutdatedFileToTable::composerOutdatedTable($path);
+        $tab  = $this->OutdatedFileToTable->composerOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
             $tab[$key] = $this->patternLigne($value);

@@ -1,43 +1,36 @@
 <?php
 
-namespace App\OutdatedFileToTable;
+namespace App\OutdatedLibraries\OutdatedFileToTable;
+
+use App\OutdatedLibraries\OutdatedFileToTable\LibraryOutdated;
 
 class OutdatedFileToTable
 {
-    private string $name;
-    private string $version;
-    private string $latesVersion;
 
-    public function __construct(string $name, string $version, string $latesVersion)
-    {
-        $this->name         = $name;
-        $this->version      = $version;
-        $this->latesVersion = $latesVersion;
-    }
 
-    public static function composerOutdatedTable(string $path): array
+    public  function composerOutdatedTable(string $path): array
     {
         $content = json_decode(file_get_contents($path), true);
         $tab[]   = '';
 
         foreach ($content['installed'] as $value) {
             $name          = $value['name'];
-            $version       = self::filterVersion($value['version']);
-            $latestVersion = self::filterVersion($value['latest']);
+            $version       = $this->filterVersion($value['version']);
+            $latestVersion = $this->filterVersion($value['latest']);
             $latestStatus  = $value['latest-status'];
             $isAbandoned   = $value['abandoned'];
 
             if ($isAbandoned || \is_string($isAbandoned)) {
-                $tab[] = new self($name, $version, 'abandonné');
+                $tab[] = new LibraryOutdated($name, $version, 'abandonné');
             } else {
                 $pieces = explode('/', $name);
 
                 if ('symfony' === $pieces[0]) {
                     if ('http-kernel' === $pieces[1]) {
-                        $tab[0] = new self($pieces[0], $version, $latestVersion);
+                        $tab[0] = new LibraryOutdated($pieces[0], $version, $latestVersion);
                     }
                 } elseif ('semver-safe-update' !== $latestStatus) {
-                    $tab[] = new self($name, $version, $latestVersion);
+                    $tab[] = new LibraryOutdated($name, $version, $latestVersion);
                 }
             }
         }
@@ -50,68 +43,63 @@ class OutdatedFileToTable
         return array_values(array_filter(explode('v', $version)))[0];
     }
 
-    public static function npmOutdatedTable(string $path): array
+    public  function npmOutdatedTable(string $path): array
     {
         $array = explode("\n", file_get_contents($path));
         $array = array_filter($array);
         $num   = \count($array);
 
         for ($i = 1; $i < $num; ++$i) {
-            $tab[] = self::patternLigneNpm(explode(' ', $array[$i]));
+            $tab[] = $this->patternLigneNpm(explode(' ', $array[$i]));
         }
 
         return array_filter($tab);
     }
 
-    private function patternLigneNpm(array $ligne)
+    private function patternLigneNpm(array $ligne): ?LibraryOutdated
     {
         $ligne         = array_values(array_filter($ligne));
         $version       = $ligne[1];
         $latestVersion = $ligne[3];
 
-        if (!self::isMajor($version, $latestVersion)) {
-            return [];
+        if (!$this->isMajor($version, $latestVersion)) {
+            return null;
         }
 
-        return new self($ligne[0], $version, $latestVersion);
+        return new LibraryOutdated($ligne[0], $version, $latestVersion);
     }
 
-    private function isMajor(string $version, string $latestVersion): bool
-    {
-        return (explode('.', $latestVersion)[0] - explode('.', $version)[0]) > 0;
-    }
-
-    public static function cocoaPodsOutdatedTable($path): array
+    public  function cocoaPodsOutdatedTable($path): array
     {
         $array = explode("\n", file_get_contents($path));
         $array = array_filter($array);
         $num   = \count($array);
 
         for ($i = 3; $i < $num; ++$i) {
-            $tab[] = self::patternLigneCocoaPods(explode(' ', $array[$i]));
+            $tab[] = $this->patternLigneCocoaPods(explode(' ', $array[$i]));
         }
 
         return array_filter($tab);
     }
 
-    private function patternLigneCocoaPods(array $ligne)
+    private function patternLigneCocoaPods(array $ligne): ?LibraryOutdated
     {
         $ligne         = array_values(array_filter($ligne));
         $version       = $ligne[2];
         $latestVersion = $ligne[4];
 
         if ('(unused)' === $ligne[4]) {
-            return new self($ligne[1], $version, 'abandonné');
+            return new LibraryOutdated($ligne[1], $version, 'abandonné');
         }
 
-        if (!self::isMajor($version, $latestVersion)) {
-            return [];
+        if (!$this->isMajor($version, $latestVersion)) {
+            return null;
         }
 
-        return new self($ligne[1], $version, $latestVersion);
+        return new LibraryOutdated($ligne[1], $version, $latestVersion);
     }
 
-    public static function androidOutdatedTable(string $path): array
+    public function androidOutdatedTable(string $path): array
     {
         $array = explode("\n", file_get_contents($path));
         $array = array_filter($array);
@@ -124,7 +112,7 @@ class OutdatedFileToTable
             }
 
             if (1 === $k) {
-                $tab[] = self::patternLigneAndroid($array[$i]);
+                $tab[] = $this->patternLigneAndroid($array[$i]);
             }
 
             if ('The following dependencies have later milestone versions:' === $array[$i]) {
@@ -135,20 +123,25 @@ class OutdatedFileToTable
         return array_filter($tab);
     }
 
-    private function patternLigneAndroid(string $ligne)
+    private function patternLigneAndroid(string $ligne): ?LibraryOutdated
     {
         $tab = explode(' ', $ligne);
 
         if ('-' !== $tab[1]) {
-            return [];
+            return null;
         }
         $version       = explode('[', $tab[3])[1];
         $latestVersion = explode(']', explode('-', $tab[5])[0])[0];
 
-        if (!self::isMajor($version, $latestVersion)) {
-            return [];
+        if (!$this->isMajor($version, $latestVersion)) {
+            return null;
         }
 
-        return new self($tab[2], $version, $latestVersion);
+        return new LibraryOutdated($tab[2], $version, $latestVersion);
+    }
+
+    private function isMajor(string $version, string $latestVersion): bool
+    {
+        return (explode('.', $latestVersion)[0] - explode('.', $version)[0]) > 0;
     }
 }
