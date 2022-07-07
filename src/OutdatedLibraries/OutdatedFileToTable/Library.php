@@ -3,7 +3,7 @@
 namespace App\OutdatedLibraries\OutdatedFileToTable;
 
 
-class LibraryOutdated
+class Library
 {
 
     private string $name;

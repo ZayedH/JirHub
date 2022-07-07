@@ -2,7 +2,7 @@
 
 namespace App\OutdatedLibraries\OutdatedFileToTable;
 
-use App\OutdatedLibraries\OutdatedFileToTable\LibraryOutdated;
+use App\OutdatedLibraries\OutdatedFileToTable\Library;
 
 class OutdatedFileToTable
 {
@@ -21,16 +21,16 @@ class OutdatedFileToTable
             $isAbandoned   = $value['abandoned'];
 
             if ($isAbandoned || \is_string($isAbandoned)) {
-                $tab[] = new LibraryOutdated($name, $version, 'abandonné');
+                $tab[] = new Library($name, $version, 'abandonné');
             } else {
                 $pieces = explode('/', $name);
 
                 if ('symfony' === $pieces[0]) {
                     if ('http-kernel' === $pieces[1]) {
-                        $tab[0] = new LibraryOutdated($pieces[0], $version, $latestVersion);
+                        $tab[0] = new Library($pieces[0], $version, $latestVersion);
                     }
                 } elseif ('semver-safe-update' !== $latestStatus) {
-                    $tab[] = new LibraryOutdated($name, $version, $latestVersion);
+                    $tab[] = new Library($name, $version, $latestVersion);
                 }
             }
         }
@@ -56,7 +56,7 @@ class OutdatedFileToTable
         return array_filter($tab);
     }
 
-    private function patternLigneNpm(array $ligne): ?LibraryOutdated
+    private function patternLigneNpm(array $ligne): ?Library
     {
         $ligne         = array_values(array_filter($ligne));
         $version       = $ligne[1];
@@ -66,7 +66,7 @@ class OutdatedFileToTable
             return null;
         }
 
-        return new LibraryOutdated($ligne[0], $version, $latestVersion);
+        return new Library($ligne[0], $version, $latestVersion);
     }
 
     public  function cocoaPodsOutdatedTable($path): array
@@ -82,21 +82,21 @@ class OutdatedFileToTable
         return array_filter($tab);
     }
 
-    private function patternLigneCocoaPods(array $ligne): ?LibraryOutdated
+    private function patternLigneCocoaPods(array $ligne): ?Library
     {
         $ligne         = array_values(array_filter($ligne));
         $version       = $ligne[2];
         $latestVersion = $ligne[4];
 
         if ('(unused)' === $ligne[4]) {
-            return new LibraryOutdated($ligne[1], $version, 'abandonné');
+            return new Library($ligne[1], $version, 'abandonné');
         }
 
         if (!$this->isMajor($version, $latestVersion)) {
             return null;
         }
 
-        return new LibraryOutdated($ligne[1], $version, $latestVersion);
+        return new Library($ligne[1], $version, $latestVersion);
     }
 
     public function androidOutdatedTable(string $path): array
@@ -123,7 +123,7 @@ class OutdatedFileToTable
         return array_filter($tab);
     }
 
-    private function patternLigneAndroid(string $ligne): ?LibraryOutdated
+    private function patternLigneAndroid(string $ligne): ?Library
     {
         $tab = explode(' ', $ligne);
 
@@ -137,7 +137,7 @@ class OutdatedFileToTable
             return null;
         }
 
-        return new LibraryOutdated($tab[2], $version, $latestVersion);
+        return new Library($tab[2], $version, $latestVersion);
     }
 
     private function isMajor(string $version, string $latestVersion): bool

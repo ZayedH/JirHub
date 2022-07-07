@@ -2,11 +2,11 @@
 
 namespace App\OutdatedLibraries\OutdatedLibrariesToElastic\ElasticInput;
 
-use App\OutdatedLibraries\OutdatedFileToTable\LibraryOutdated;
+use App\OutdatedLibraries\OutdatedFileToTable\Library;
 
 trait PatternTrait
 {
-    private function patternArray(string $project, LibraryOutdated $value): array
+    private function patternArray(string $project, Library $value): array
     {
         $name = $value->getName();
         $installedVersion = $value->getInstalledVersion();

@@ -2,7 +2,7 @@
 
 namespace App\OutdatedLibraries\OutdatedLibrariesMarkdown;
 
-use App\OutdatedLibraries\OutdatedFileToTable\LibraryOutdated;
+use App\OutdatedLibraries\OutdatedFileToTable\Library;
 
 trait PatternTrait
 {
@@ -11,7 +11,7 @@ trait PatternTrait
         return ["| $name | version  | version disponible |", '| --- | --- | --- |'];
     }
 
-    private function patternLigne(LibraryOutdated $value): string
+    private function patternLigne(Library $value): string
     {
         $name = $value->getName();
         $installedVersion = $value->getInstalledVersion();
