@@ -2,13 +2,9 @@
 
 namespace App\OutdatedLibraries\OutdatedFileToTable;
 
-use App\OutdatedLibraries\OutdatedFileToTable\Library;
-
 class OutdatedFileToTable
 {
-
-
-    public  function composerOutdatedTable(string $path): array
+    public function composerOutdatedTable(string $path): array
     {
         $content = json_decode(file_get_contents($path), true);
         $tab[]   = '';
@@ -43,7 +39,7 @@ class OutdatedFileToTable
         return array_values(array_filter(explode('v', $version)))[0];
     }
 
-    public  function npmOutdatedTable(string $path): array
+    public function npmOutdatedTable(string $path): array
     {
         $array = explode("\n", file_get_contents($path));
         $array = array_filter($array);
@@ -69,7 +65,7 @@ class OutdatedFileToTable
         return new Library($ligne[0], $version, $latestVersion);
     }
 
-    public  function cocoaPodsOutdatedTable($path): array
+    public function cocoaPodsOutdatedTable($path): array
     {
         $array = explode("\n", file_get_contents($path));
         $array = array_filter($array);

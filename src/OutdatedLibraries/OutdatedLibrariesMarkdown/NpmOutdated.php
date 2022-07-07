@@ -21,7 +21,6 @@ class NpmOutdated extends Command
         $this->OutdatedFileToTable = $OutdatedFileToTable;
     }
 
-
     protected function configure()
     {
         $this->setDescription('npm collectting outdated libraries ');

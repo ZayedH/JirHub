@@ -19,7 +19,7 @@ class NpmOutdated
         $tab = $this->OutdatedFileToTable->npmOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
-            $tab[$key] = $this->patternArray($name,  $value);
+            $tab[$key] = $this->patternArray($name, $value);
         }
         $now   = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
         $tab[] = ['@timestamp' => $now];

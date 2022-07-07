@@ -19,7 +19,7 @@ class CocoaPodsOutdated
         $tab = $this->OutdatedFileToTable->cocoaPodsOutdatedTable($path);
 
         foreach ($tab as $key => $value) {
-            $tab[$key] = $this->patternArray($name,  $value);
+            $tab[$key] = $this->patternArray($name, $value);
         }
         $now   = (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339);
         $tab[] = ['@timestamp' => $now];

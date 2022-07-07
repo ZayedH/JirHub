@@ -21,6 +21,7 @@ class ComposerOutdated extends Command
         parent::__construct();
         $this->OutdatedFileToTable = $OutdatedFileToTable;
     }
+
     protected function configure(): void
     {
         $this->setDescription('collecting outdated libraries');
